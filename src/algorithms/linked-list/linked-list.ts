@@ -1,5 +1,7 @@
 import { ListNode } from './list-node';
 
+type Comparator<T> = (a: T, b: T) => boolean;
+
 export class LinkedList<T> {
   static fromArray<T>(arr: T[]): LinkedList<T> {
     return arr.reduce((list, item) => {
@@ -10,10 +12,14 @@ export class LinkedList<T> {
 
   head: ListNode<T> | null;
   tail: ListNode<T> | null;
+  comparator: Comparator<T>;
 
-  constructor() {
+  constructor(comparator?: Comparator<T>) {
     this.head = null;
     this.tail = null;
+
+    const defaultComparator = (a: T, b: T) => a === b;
+    this.comparator = comparator ?? defaultComparator;
   }
 
   prepend(value: T): LinkedList<T> {
@@ -42,14 +48,27 @@ export class LinkedList<T> {
     return this;
   }
 
-  find(value: T): ListNode<T> | null {
+  find({
+    value,
+    callback,
+  }: {
+    value?: T;
+    callback?: (value: T) => boolean;
+  }): ListNode<T> | null {
     if (!this.head || !this.tail) {
       return null;
     }
 
     let node: ListNode<T> | null = this.head;
     while (node) {
-      if (node.value === value) {
+      if (callback) {
+        if (callback(node.value)) {
+          return node;
+        }
+      } else if (
+        typeof value !== 'undefined' &&
+        this.comparator(node.value, value)
+      ) {
         return node;
       }
       node = node.next;
@@ -65,7 +84,7 @@ export class LinkedList<T> {
     let result = false;
     let node: ListNode<T> | null = this.head;
     while (node && node.next) {
-      if (node.next.value === value) {
+      if (this.comparator(node.next.value, value)) {
         node.next = node.next.next;
         result = true;
       } else {
@@ -73,16 +92,19 @@ export class LinkedList<T> {
       }
     }
 
-    if (node.value === value) {
+    if (this.comparator(node.value, value)) {
       node = node.next;
+      result = true;
     }
 
-    if (this.head.value === value) {
+    if (this.comparator(this.head.value, value)) {
       this.head = this.head.next;
+      result = true;
     }
 
-    if (this.tail.value === value) {
+    if (this.comparator(this.tail.value, value)) {
       this.tail = node;
+      result = true;
     }
 
     return result;

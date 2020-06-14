@@ -42,14 +42,14 @@ describe('LinkedList', () => {
     test('should return found node', () => {
       const list = LinkedList.fromArray([5, 6, 7, 8]);
 
-      expect(list.find(7)?.value).toEqual(7);
-      expect(list.find(7)?.next?.value).toEqual(8);
+      expect(list.find({ value: 7 })?.value).toEqual(7);
+      expect(list.find({ value: 7 })?.next?.value).toEqual(8);
     });
 
     test('should return null if node not found', () => {
       const list = LinkedList.fromArray([4, 3, 2, 1]);
 
-      expect(list.find(0)).toBeNull();
+      expect(list.find({ value: 0 })).toBeNull();
     });
   });
 
