@@ -1,19 +1,13 @@
 export function twoSum(nums: number[], target: number): number[] {
-  const indexMap = nums.reduce(
-    (currentIndexMap, num, index) => ({
-      ...currentIndexMap,
-      [`${num}`]: index,
-    }),
-    {} as { [key: string]: number },
-  );
-
-  for (let index = 0; index < nums.length; index += 1) {
-    const left = target - nums[index];
-    const leftIndex = indexMap[`${left}`] as number | undefined;
-    if (typeof leftIndex === 'number' && leftIndex !== index) {
-      return [index, leftIndex];
+  const numByIndex: { [key: string]: number } = {};
+  for (let i = 0; i < nums.length; i += 1) {
+    const left = target - nums[i];
+    if (typeof numByIndex[`${left}`] !== 'undefined') {
+      return [numByIndex[`${left}`], i];
     }
+    numByIndex[`${nums[i]}`] = i;
   }
-
+  // This will never happen since there will always be a pair, so ignore it from code coverage
+  /* istanbul ignore next */
   return [];
 }
