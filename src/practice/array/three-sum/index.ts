@@ -3,7 +3,7 @@ export function threeSum(nums: number[]): number[][] {
   nums.sort((a, b) => (a > b ? 1 : -1));
   const results: number[][] = [];
 
-  // Go from 0 to nums.length - 2 since we will 3 variables
+  // Go from 0 to nums.length - 2 since we will use 3 variables
   for (let i = 0; i < nums.length - 2; i += 1) {
     // Since the array was sorted, if nums[i] > 0 then we can stop here
     if (nums[i] > 0) {
@@ -23,9 +23,11 @@ export function threeSum(nums: number[]): number[][] {
       const sum = nums[i] + nums[nextI] + nums[lastI];
       if (sum === 0) {
         results.push([nums[i], nums[nextI], nums[lastI]]);
+        // Ignore duplicated numbers
         while (nextI < lastI && nums[nextI] === nums[nextI + 1]) {
           nextI += 1;
         }
+        // Ignore duplicated numbers
         while (nextI < lastI && nums[lastI] === nums[lastI - 1]) {
           lastI -= 1;
         }
@@ -35,7 +37,7 @@ export function threeSum(nums: number[]): number[][] {
         // Sum is too big, decrease lastI to decrease the sum
         lastI -= 1;
       } else {
-        // Sum too small, increase nextI to increase the sum
+        // Sum is too small, increase nextI to increase the sum
         nextI += 1;
       }
     }
